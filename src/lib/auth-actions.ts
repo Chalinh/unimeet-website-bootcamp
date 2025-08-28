@@ -1,85 +1,64 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
 import { createClient } from "../../utils/supabase/server";
 
-export async function login(formData: FormData) {
-  const supabase = await createClient();
-
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  };
-
-  const { error } = await supabase.auth.signInWithPassword(data);
-
-  if (error) {
-    redirect("/error");
-  }
-
-  revalidatePath("/dashboard");
-  redirect("/dashboard");
-}
-
+/* ------------------ SIGNUP ------------------ */
 export async function signup(formData: FormData) {
   const supabase = await createClient();
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const firstName = formData.get("first-name") as string;
-  const lastName = formData.get("last-name") as string;
-  const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
+  // 2️⃣ Sign up user with email verification
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
     options: {
-      data: {
-        full_name: `${firstName + " " + lastName}`,
-        email: formData.get("email") as string,
-      },
-    },
-  };
-
-  const { error } = await supabase.auth.signUp(data);
-
-  if (error) {
-    redirect("/error");
-  }
-
-  revalidatePath("/dashboard");
-  redirect("/dashboard");
-}
-
-export async function signout() {
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.log(error);
-    redirect("/error");
-  }
-
-  redirect("/logout");
-}
-
-export async function signInWithGoogle() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      queryParams: {
-        access_type: "offline",
-        prompt: "consent",
-      },
+      data: { full_name: name },
     },
   });
 
+  // 3️⃣ Redirect to login with message
   if (error) {
-    console.log(error);
-    redirect("/error");
+    return { success: false, message: error.message };
   }
 
-  redirect(data.url);
+  return {
+    success: true,
+    message: "Check your email inbox to confirm your account before logging in.",
+}
+}
+
+/* ------------------ LOGIN ------------------ */
+export type AuthResponse = {
+  success: boolean;
+  message: string;
+};
+
+export async function login(formData: FormData): Promise<AuthResponse> {
+  const supabase = await createClient();
+
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    return { success: false, message: error.message };
+  }
+
+  if (user) {
+    return { success: true, message: "Logged in successfully!" };
+  }
+
+  return { success: false, message: "Something went wrong." };
+}
+/* ------------------ LOGOUT ------------------ */
+export async function logout() {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signOut();
+
+  if (error) redirect("/error?message=" + encodeURIComponent(error.message));
+  redirect("/login");
 }
