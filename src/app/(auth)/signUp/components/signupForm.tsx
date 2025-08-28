@@ -1,13 +1,45 @@
 'use client';
 
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import {signup} from "@/lib/auth-actions"
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import Link from "next/link";
+import React, { useState } from "react";
+import { signup } from "@/lib/auth-actions";
 
 export default function SignUpForm() {
-    const router = useRouter();
+  const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setMessage(null);
+
+    const formData = new FormData(e.currentTarget);
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirm-password") as string;
+
+    // ✅ Client-side check: password match
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match!");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await signup(formData);
+
+      // ✅ Server-side response handling
+      // If user already exists or invalid email, server returns a friendly message
+      setMessage(result.message);
+
+    } catch (err) {
+      console.error(err);
+      setMessage("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
     return (
     <Card>
@@ -15,7 +47,7 @@ export default function SignUpForm() {
             <CardTitle className="text-center">Sign Up</CardTitle>
         </CardHeader>
         <CardContent>
-            <form action={signup} className="justify-center flex flex-col space-y-3 w-100">
+            <form onSubmit={handleSubmit} className="justify-center flex flex-col space-y-3 w-100">
                 <div className='flex flex-col space-y-2'>
                     <label htmlFor="name">Your Name</label>
                     <input type="text" id="name" name="name" placeholder='Enter your name' className='border-1 rounded-md px-3' required />
@@ -36,7 +68,14 @@ export default function SignUpForm() {
                     <input type="checkbox" id="terms" required />
                     <label htmlFor="terms" className="ml-2 text-sm">by creating an account your are agreeing to our Terms and Conditions and Privacy Policy</label>
                 </div>
-                    <Button type="submit" formAction={signup} className="bg-[#F7B544] text-[#ffffff] hover:bg-[#F59F0A] mt-2">Sign Up</Button>
+                    <Button type="submit" className="bg-[#F7B544] text-[#ffffff] hover:bg-[#F59F0A] mt-2">
+                        {loading ? "Signing Up..." : "Sign Up"}
+                    </Button>
+                    {message && (
+            <p className={`ml-2 text-sm text-center ${message.includes("Check your email") ? "text-green-600" : "text-red-600"}`}>
+              {message}
+            </p>
+          )}
             </form>
         </CardContent>
         <CardFooter className="flex justify-center pb-5">
