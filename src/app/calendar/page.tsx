@@ -1,14 +1,14 @@
 "use client"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../components/ui/dropdown-menu";
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "../../components/ui/button"
+import { Input } from "../../components/ui/input"
+import { Textarea } from "../../components/ui/textarea"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog"
+import { Avatar, AvatarFallback } from "../../components/ui/avatar"
 import { Search, Home, Calendar, Plus, X, MoreVertical, Edit, Trash2, LogOutIcon, Users, User, ChevronLeft, ChevronRight, BarChart3, BookOpen, Coffee, MapPin, Clock } from 'lucide-react'
 import Image from "next/image";
-import { Sidebar, SidebarContent, SidebarHeader, SidebarProvider } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarHeader, SidebarProvider } from "../../components/ui/sidebar";
 import Link from "next/link"
 
 interface Meeting {

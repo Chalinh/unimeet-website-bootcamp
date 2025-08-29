@@ -1,10 +1,10 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "./button";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "./card";
 import Link from "next/link";
 import React, { useState } from "react";
-import { signup } from "@/lib/auth-actions";
+import { signup } from "../../lib/auth-actions";
 
 export default function SignUpForm() {
   const [message, setMessage] = useState<string | null>(null);

@@ -1,10 +1,10 @@
 'use client'
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../components/ui/button';
 import Image from "next/image";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "../../../components/ui/card";
 import { useState } from 'react';
-import LoginForm from './components/loginForm';
+import LoginForm from '../../../components/ui/loginForm';
 
 export default function SignUp() {
     const [formData, setFormData] = useState({

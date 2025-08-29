@@ -1,11 +1,11 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "./button";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "./card";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { login } from "@/lib/auth-actions";
+import { login } from "../../lib/auth-actions";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function LoginForm() {
       // Handle server response
       if (result?.success) {
         setMessage("Logged in successfully!");
-        router.push("/dashboard"); // change redirect page as needed
+        router.push("/dashboard");
       } else {
         setMessage(result?.message || "Invalid email or password.");
       }
