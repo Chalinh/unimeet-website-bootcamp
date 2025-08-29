@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       token_hash,
     })
     if (!error) {
-      redirect('/login')
+      redirect('/dashboard')
     }
   }
 
