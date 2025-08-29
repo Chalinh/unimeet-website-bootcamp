@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
         description: body.description,
         owner_id: user.id,
         invite_link: generateInviteLink(),
+        created_at: new Date().toISOString(),
       })
       .select()
       .single();
